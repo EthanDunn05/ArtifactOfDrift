@@ -18,8 +18,12 @@ public static class DriftArtifact
     private const string Description = "Every stage is randomized.";
     private const string LunarTeleporterKey =
         "RoR2/Base/Teleporters/iscLunarTeleporter.asset";
-    
+
     private static bool Enabled => RunArtifactManager.instance.IsArtifactEnabled(Drift.Def.artifactIndex);
+    private static SceneDef[] validStages => SceneCatalog.allStageSceneDefs
+        .Where(stage => stage.validForRandomSelection)
+        .Where(stage => stage.requiredExpansion == null || RoR2.Run.instance.IsExpansionEnabled(stage.requiredExpansion))
+        .ToArray();
 
     public static void Initialize()
     {
@@ -49,20 +53,14 @@ public static class DriftArtifact
 
     private static void RunOnPickNextStageScene(Run.orig_PickNextStageScene orig, RoR2.Run self, WeightedSelection<SceneDef> choices)
     {
-        var validStages = SceneCatalog.allStageSceneDefs
-            .Where(stage => stage.validForRandomSelection)
-            .Where(stage => stage.requiredExpansion == null || self.IsExpansionEnabled(stage.requiredExpansion))
-            .ToArray();
-
-        if (Enabled)
-        {
-            choices = new WeightedSelection<SceneDef>();
-            foreach (var stage in validStages)
-            {
-                choices.AddChoice(stage, 1f);
-            }
-        }
-
         orig(self, choices);
+        if (!Enabled || !validStages.Contains(self.nextStageScene)) return;
+        
+        Log.LogInfo("Randomizing stage");
+        var replacement = new WeightedSelection<SceneDef>();
+        foreach (var stage in validStages)
+            replacement.AddChoice(stage, 1f);
+        
+        orig(self, replacement);
     }
 }
