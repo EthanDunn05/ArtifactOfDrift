@@ -15,7 +15,7 @@ public static class DriftArtifact
     private static Artifact Drift;
 
     private const string Name = "Artifact of Drift";
-    private const string Description = "Every stage is randomized.";
+    private const string Description = "Stages progress in a random order.";
     private const string LunarTeleporterKey =
         "RoR2/Base/Teleporters/iscLunarTeleporter.asset";
 

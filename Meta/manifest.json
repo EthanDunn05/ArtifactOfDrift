@@ -1,8 +1,8 @@
 ﻿{
   "name": "Artifact_of_Drift",
-  "version_number": "1.0.0",
+  "version_number": "1.0.1",
   "website_url": "https://github.com/EthanDunn05/ArtifactOfDrift",
-  "description": "Randomizes each stage in a standard run.",
+  "description": "Stages progress in a random order.",
   "dependencies": [
     "bbepis-BepInExPack-5.4.1902",
     "tristanmcpherson-R2API-4.0.11"
